@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Majid News Channel</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#f2f4f8;}
+
+header{
+background:#b30000;
+color:white;
+padding:18px;
+text-align:center;
+font-size:26px;
+font-weight:bold;
+}
+
+nav{
+background:#1b263b;
+padding:10px;
+text-align:center;
+}
+
+nav button{
+background:white;
+border:none;
+padding:8px 12px;
+margin:4px;
+cursor:pointer;
+border-radius:5px;
+font-weight:bold;
+}
+
+.section{display:none;}
+.active{display:block;}
+
+.container{width:90%;margin:auto;margin-top:20px;}
+
+.card{
+background:white;
+padding:15px;
+border-radius:8px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+margin-top:15px;
+}
+
+input,textarea,select{
+width:100%;
+padding:8px;
+margin-top:6px;
+margin-bottom:10px;
+}
+
+button.publish{
+background:#0077ff;
+color:white;
+border:none;
+padding:10px;
+border-radius:6px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+Majid News Live 📺
+</header>
+
+<nav>
+<button onclick="show('home')">Home</button>
+<button onclick="adminLogin()">Admin Login 🔐</button>
+</nav>
+
+<div class="container">
+
+<!-- HOME -->
+<div id="home" class="section active">
+<h2>Latest News</h2>
+<div id="newsList"></div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="section">
+<h2>Add News (Admin Only)</h2>
+
+<input type="text" id="title" placeholder="News Title">
+
+<select id="category">
+<option value="General">General</option>
+<option value="Sports">Sports</option>
+<option value="World">World</option>
+<option value="Business">Business</option>
+</select>
+
+<input type="text" id="image" placeholder="Image URL">
+
+<textarea id="text" placeholder="News Content"></textarea>
+
+<input type="text" id="video" placeholder="YouTube Video Link (Optional)">
+
+<button class="publish" onclick="addNews()">Publish News</button>
+
+</div>
+
+</div>
+
+<script>
+
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+let news = JSON.parse(localStorage.getItem("news")) || [];
+
+function displayNews(){
+newsList.innerHTML="";
+news.forEach(n=>{
+
+let videoEmbed="";
+if(n.video){
+let id=n.video.split("v=")[1];
+videoEmbed=`<iframe width="100%" height="300"
+src="https://www.youtube.com/embed/${id}"
+frameborder="0" allowfullscreen></iframe>`;
+}
+
+newsList.innerHTML+=`
+<div class="card">
+<h3>${n.title} (${n.category})</h3>
+<img src="${n.image}" style="width:100%;border-radius:8px;margin-top:10px;">
+<p>${n.text}</p>
+${videoEmbed}
+</div>
+`;
+
+});
+}
+
+function addNews(){
+
+let data={
+title:document.getElementById("title").value,
+category:document.getElementById("category").value,
+image:document.getElementById("image").value,
+text:document.getElementById("text").value,
+video:document.getElementById("video").value
+};
+
+news.push(data);
+localStorage.setItem("news",JSON.stringify(news));
+displayNews();
+alert("News Published!");
+}
+
+function adminLogin(){
+let password = prompt("Enter Admin Password:");
+if(password==="12345"){
+show('admin');
+}else{
+alert("Wrong Password!");
+}
+}
+
+displayNews();S
+
+</script>
+
+</body>
+</html>
